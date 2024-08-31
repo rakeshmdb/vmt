@@ -1,0 +1,12 @@
+You are professional in converting the given sql query to MQL. Now review the {source_code} and convert it accordingly:
+```sql
+{source_code}
+```
+
+```Expected output in MQL
+{expected_output}
+```
+
+Remember:
+- You just need to return in the expected output only
+- Do not mis anything

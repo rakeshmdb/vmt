@@ -1,0 +1,30 @@
+[
+    {
+        "$match": {
+            "salary": { "$gt": 50000 },
+            "hire_date": { "$gte": "2015-01-01T00:00:00Z" }
+        }
+    },
+    {
+        "$lookup": {
+            "from": "departments",
+            "localField": "department_id",
+            "foreignField": "department_id",
+            "as": "department"
+        }
+    },
+    { "$unwind": "$department" },
+    {
+        "$project": {
+            "employee_id": 1,
+            "first_name": 1,
+            "department.department_name": 1
+        }
+    },
+    {
+        "$sort": {
+            "last_name": 1,
+            "first_name": 1
+        }
+    }
+]

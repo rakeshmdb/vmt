@@ -1,0 +1,52 @@
+{
+    "name": "list_framework_changes",
+    "description": "Lists all modifications required to migrate the source framework code to run on the target framework.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "source_framework": {
+                "type": "string",
+                "description": "The source framework."
+            },
+            "target_framework": {
+                "type": "string",
+                "description": "The target framework."
+            },
+            "changes": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "description": "The type of change."
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "The description of the change."
+                        },
+                        "context": {
+                            "type": "string",
+                            "description": "A reference to the code being changed. Can be a method, class, or other context within the codebase."
+                        },
+                        "complexity": {
+                            "type": "object",
+                            "properties": {
+                                "value": {
+                                    "type": "string",
+                                    "enum": ["low", "medium", "high"],
+                                    "description": "How complex it will be to make the change. Options: low, medium, high"
+                                },
+                                "explanation": {
+                                    "type": "string",
+                                    "description": "A detailed explanation of why the complexity is low, medium, or high. Minimum 100 characters."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "required": ["source_framework", "target_framework", "changes"]
+    }
+}

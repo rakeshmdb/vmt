@@ -1,0 +1,28 @@
+{
+    "name": "HAR_to_mermaid_converter",
+    "description": "Converts HAR to mermaid file",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "content": {
+                "type": "string",
+                "description": "HAR file content"
+            },
+            "response": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "mmd": {
+                            "type": "string",
+                            "description": "converted Mermaid code"
+                        }
+                    }
+                }
+            }
+        },
+        "required": [
+            "content"
+        ]
+    }
+}
