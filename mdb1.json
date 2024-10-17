@@ -1,175 +1,181 @@
-[
-    {
-        "$match": {
-            "salary": { "$gt": 50000 },
-            "hire_date": { "$gte": "2015-01-01T00:00:00Z" },
-            "region_name": "North America"
+```mongodb
+db.createView(
+    "employee_project_view",  // The name of the view
+    "employee",  // The source collection
+    [
+        {
+            "$match": {
+                "salary": { "$gt": 50000 },
+                "hire_date": { "$gte": new Date("2015-01-01T00:00:00Z") },
+                "region_name": "North America"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "departments",
+                "localField": "department_id",
+                "foreignField": "department_id",
+                "as": "department"
+            }
+        },
+        {
+            "$unwind": "$department"
+        },
+        {
+            "$lookup": {
+                "from": "locations",
+                "localField": "department.location_id",
+                "foreignField": "location_id",
+                "as": "location"
+            }
+        },
+        {
+            "$unwind": "$location"
+        },
+        {
+            "$lookup": {
+                "from": "countries",
+                "localField": "location.country_id",
+                "foreignField": "country_id",
+                "as": "country"
+            }
+        },
+        {
+            "$unwind": "$country"
+        },
+        {
+            "$lookup": {
+                "from": "regions",
+                "localField": "country.region_id",
+                "foreignField": "region_id",
+                "as": "region"
+            }
+        },
+        {
+            "$unwind": "$region"
+        },
+        {
+            "$lookup": {
+                "from": "jobs",
+                "localField": "job_id",
+                "foreignField": "job_id",
+                "as": "job"
+            }
+        },
+        {
+            "$unwind": {
+                "path": "$job",
+                "preserveNullAndEmptyArrays": true
+            }
+        },
+        {
+            "$lookup": {
+                "from": "employees",
+                "localField": "manager_id",
+                "foreignField": "employee_id",
+                "as": "manager"
+            }
+        },
+        {
+            "$unwind": {
+                "path": "$manager",
+                "preserveNullAndEmptyArrays": true
+            }
+        },
+        {
+            "$lookup": {
+                "from": "project_assignments",
+                "localField": "employee_id",
+                "foreignField": "employee_id",
+                "as": "project_assignments"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "projects",
+                "localField": "project_assignments.project_id",
+                "foreignField": "project_id",
+                "as": "projects"
+            }
+        },
+        {
+            "$unwind": {
+                "path": "$projects",
+                "preserveNullAndEmptyArrays": true
+            }
+        },
+        {
+            "$group": {
+                "_id": {
+                    "employee_id": "$employee_id",
+                    "first_name": "$first_name",
+                    "last_name": "$last_name",
+                    "email": "$email",
+                    "phone_number": "$phone_number",
+                    "hire_date": "$hire_date",
+                    "job_id": "$job_id",
+                    "salary": "$salary",
+                    "manager_id": "$manager_id",
+                    "department_id": "$department_id",
+                    "department_name": "$department.department_name",
+                    "location_id": "$department.location_id",
+                    "city": "$location.city",
+                    "state_province": "$location.state_province",
+                    "country_id": "$location.country_id",
+                    "country_name": "$country.country_name",
+                    "region_id": "$country.region_id",
+                    "region_name": "$region.region_name",
+                    "job_title": "$job.job_title",
+                    "min_salary": "$job.min_salary",
+                    "max_salary": "$job.max_salary",
+                    "manager_first_name": "$manager.first_name",
+                    "manager_last_name": "$manager.last_name"
+                },
+                "project_count": { "$sum": 1 },
+                "total_project_budget": { "$sum": "$projects.budget" }
+            }
+        },
+        {
+            "$match": {
+                "project_count": { "$gt": 2 }
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "employee_id": "$_id.employee_id",
+                "first_name": "$_id.first_name",
+                "last_name": "$_id.last_name",
+                "email": "$_id.email",
+                "phone_number": "$_id.phone_number",
+                "hire_date": "$_id.hire_date",
+                "job_id": "$_id.job_id",
+                "salary": "$_id.salary",
+                "manager_id": "$_id.manager_id",
+                "department_id": "$_id.department_id",
+                "department_name": "$_id.department_name",
+                "location_id": "$_id.location_id",
+                "city": "$_id.city",
+                "state_province": "$_id.state_province",
+                "country_id": "$_id.country_id",
+                "country_name": "$_id.country_name",
+                "region_id": "$_id.region_id",
+                "region_name": "$_id.region_name",
+                "job_title": "$_id.job_title",
+                "min_salary": "$_id.min_salary",
+                "max_salary": "$_id.max_salary",
+                "manager_first_name": "$_id.manager_first_name",
+                "manager_last_name": "$_id.manager_last_name",
+                "project_count": 1,
+                "total_project_budget": 1
+            }
+        },
+        {
+            "$sort": {
+                "last_name": 1,
+                "first_name": 1
+            }
         }
-    },
-    {
-        "$lookup": {
-            "from": "departments",
-            "localField": "department_id",
-            "foreignField": "department_id",
-            "as": "department"
-        }
-    },
-    {
-        "$unwind": "$department"
-    },
-    {
-        "$lookup": {
-            "from": "locations",
-            "localField": "department.location_id",
-            "foreignField": "location_id",
-            "as": "location"
-        }
-    },
-    {
-        "$unwind": "$location"
-    },
-    {
-        "$lookup": {
-            "from": "countries",
-            "localField": "location.country_id",
-            "foreignField": "country_id",
-            "as": "country"
-        }
-    },
-    {
-        "$unwind": "$country"
-    },
-    {
-        "$lookup": {
-            "from": "regions",
-            "localField": "country.region_id",
-            "foreignField": "region_id",
-            "as": "region"
-        }
-    },
-    {
-        "$unwind": "$region"
-    },
-    {
-        "$lookup": {
-            "from": "jobs",
-            "localField": "job_id",
-            "foreignField": "job_id",
-            "as": "job"
-        }
-    },
-    {
-        "$unwind": {
-            "path": "$job",
-            "preserveNullAndEmptyArrays": true
-        }
-    },
-    {
-        "$lookup": {
-            "from": "employees",
-            "localField": "manager_id",
-            "foreignField": "employee_id",
-            "as": "manager"
-        }
-    },
-    {
-        "$unwind": {
-            "path": "$manager",
-            "preserveNullAndEmptyArrays": true
-        }
-    },
-    {
-        "$lookup": {
-            "from": "project_assignments",
-            "localField": "employee_id",
-            "foreignField": "employee_id",
-            "as": "project_assignments"
-        }
-    },
-    {
-        "$lookup": {
-            "from": "projects",
-            "localField": "project_assignments.project_id",
-            "foreignField": "project_id",
-            "as": "projects"
-        }
-    },
-    {
-        "$unwind": {
-            "path": "$projects",
-            "preserveNullAndEmptyArrays": true
-        }
-    },
-    {
-        "$group": {
-            "_id": {
-                "employee_id": "$employee_id",
-                "first_name": "$first_name",
-                "last_name": "$last_name",
-                "email": "$email",
-                "phone_number": "$phone_number",
-                "hire_date": "$hire_date",
-                "job_id": "$job_id",
-                "salary": "$salary",
-                "manager_id": "$manager_id",
-                "department_id": "$department_id",
-                "department_name": "$department.department_name",
-                "location_id": "$department.location_id",
-                "city": "$location.city",
-                "state_province": "$location.state_province",
-                "country_id": "$location.country_id",
-                "country_name": "$country.country_name",
-                "region_id": "$country.region_id",
-                "region_name": "$region.region_name",
-                "job_title": "$job.job_title",
-                "min_salary": "$job.min_salary",
-                "max_salary": "$job.max_salary",
-                "manager_first_name": "$manager.first_name",
-                "manager_last_name": "$manager.last_name"
-            },
-            "project_count": { "$sum": 1 },
-            "total_project_budget": { "$sum": "$projects.budget" }
-        }
-    },
-    {
-        "$match": {
-            "project_count": { "$gt": 2 }
-        }
-    },
-    {
-        "$project": {
-            "_id": 0,
-            "employee_id": "$_id.employee_id",
-            "first_name": "$_id.first_name",
-            "last_name": "$_id.last_name",
-            "email": "$_id.email",
-            "phone_number": "$_id.phone_number",
-            "hire_date": "$_id.hire_date",
-            "job_id": "$_id.job_id",
-            "salary": "$_id.salary",
-            "manager_id": "$_id.manager_id",
-            "department_id": "$_id.department_id",
-            "department_name": "$_id.department_name",
-            "location_id": "$_id.location_id",
-            "city": "$_id.city",
-            "state_province": "$_id.state_province",
-            "country_id": "$_id.country_id",
-            "country_name": "$_id.country_name",
-            "region_id": "$_id.region_id",
-            "region_name": "$_id.region_name",
-            "job_title": "$_id.job_title",
-            "min_salary": "$_id.min_salary",
-            "max_salary": "$_id.max_salary",
-            "manager_first_name": "$_id.manager_first_name",
-            "manager_last_name": "$_id.manager_last_name",
-            "project_count": 1,
-            "total_project_budget": 1
-        }
-    },
-    {
-        "$sort": {
-            "last_name": 1,
-            "first_name": 1
-        }
-    }
-]
+    ]
+);
+```

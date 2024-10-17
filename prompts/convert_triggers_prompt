@@ -1,0 +1,15 @@
+You are professional in converting the given sql trigger to change stream spring boot java. Now review the {source_code} and convert it accordingly:
+```oracle trigger
+{source_code}
+```
+
+```Expected output in Change stream spring boot java
+{trigger_expected_output}
+```
+
+```Trigger name
+{trigger_name}
+```
+
+Remember:
+- Maintain the structure expected output as {trigger_expected_output}.

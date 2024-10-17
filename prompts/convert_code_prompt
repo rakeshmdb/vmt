@@ -7,6 +7,15 @@ You are professional in converting the given sql query to MQL. Now review the {s
 {expected_output}
 ```
 
+```View name
+{view_name}
+```
+
 Remember:
-- You just need to return in the expected output only
-- Do not mis anything
+- Maintain the structure expected output as {expected_output}.
+- 1st index should be view name and 2nd index should be the table name and it is must.
+- Property name should be enclosed in double quotes.
+- Strictly make all the fields and table name should be in uppercase.
+- Ensure that user variables in the $let and $match stages start with a valid character (typically a lowercase letter).
+- You just need to return in the expected output only.
+- The $unionWith stage is used to combine the results of multiple collections or pipelines into a single pipeline, but the provided command has nested $lookup stages within the $unionWith stage, which is incorrect. Instead, you need to create separate pipelines for each part of the union and use $unionWith to combine them.

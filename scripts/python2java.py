@@ -8,7 +8,7 @@ class PythontoJava:
     openai_serv_obj = OpenAIService()
     file_path = "/Users/rakesh.tripathi/Desktop/Allianz/bedrock-testing/sample-sql1.sql"
     expected_path = "/Users/rakesh.tripathi/Desktop/Allianz/bedrock-testing/mdb.json"
-    logger = LoggerUtility.setup_logger("PythontoJava1")  
+    # logger = LoggerUtility.setup_logger("PythontoJava1")  
 
     def pythonToJava(self): 
         messages = []

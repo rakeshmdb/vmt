@@ -18,7 +18,7 @@ class AWSBedrockService:
             config=self.config
         )
         self.model_id = os.environ['AWS_BEDROCK_MODEL_ID']  #  Model ID from environment variables
-        self.anthropic_version = os.environ['AWS_BEDROCK_ANTHROPIC_VERSION']
+        self.anthropic_version = "bedrock-2023-05-31"
 
     def do_function_completion(self, messages, function, temperature=0, top_p=0):
         body = {
